@@ -1,10 +1,5 @@
-import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { useEffect, useState } from "react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface ProofItem {
   id: number;
@@ -30,106 +25,108 @@ interface ContributionItem {
   description: string;
 }
 
+/* ---------------- DATA ---------------- */
+
 const proofItems: ProofItem[] = [
   {
     id: 1,
     image: "pow1.jpeg",
-    label: "Community Growth",
+    label: "Community Growth Sprint",
     description:
-      "Grew this community in one week through strategic engagement and retention campaigns.",
+      "Scaled an early-stage Web3 community from inactive to daily engagement within one week.",
     platform: "X (Twitter)",
     expandedContext:
-      "Implemented structured growth systems that prioritized quality interactions over vanity metrics, resulting in sustained daily engagement across multiple time zones.",
+      "Designed and executed a rapid growth sprint focused on daily prompts, incentive-driven replies, and timezone-based engagement cycles. Resulted in consistent organic conversations and higher retention.",
   },
   {
     id: 2,
-    image: "pow3.jpeg",
-    label: "Raid Coordination",
+    image: "pow2.jpeg",
+    label: "Raid Campaign Execution",
     description:
-      "Led coordinated raids and content campaigns that increased active participation.",
+      "Coordinated high-impact raid campaigns around key announcements.",
     platform: "X (Twitter)",
     expandedContext:
-      "Organized and executed high-impact raid campaigns with precise timing and coordination, driving measurable engagement spikes and community visibility.",
+      "Led synchronized raid sessions tied to product updates and partnerships, aligning contributors with pre-crafted messaging to maximize visibility and algorithmic reach.",
   },
   {
     id: 3,
     image: "pow3.jpeg",
-    label: "Raid Coordination",
+    label: "Content Amplification",
     description:
-      "Led coordinated raids and content campaigns that increased active participation.",
+      "Amplified long-form content through structured engagement loops.",
     platform: "X (Twitter)",
     expandedContext:
-      "Organized and executed high-impact raid campaigns with precise timing and coordination, driving measurable engagement spikes and community visibility.",
+      "Built amplification systems where core contributors boosted threads strategically, extending content lifespan and driving sustained impressions beyond the first 24 hours.",
   },
   {
     id: 4,
-    image: "pow3.jpeg",
-    label: "Raid Coordination",
+    image: "pow4.jpeg",
+    label: "Engagement Framework Design",
     description:
-      "Led coordinated raids and content campaigns that increased active participation.",
+      "Designed reusable engagement frameworks for community members.",
     platform: "X (Twitter)",
     expandedContext:
-      "Organized and executed high-impact raid campaigns with precise timing and coordination, driving measurable engagement spikes and community visibility.",
+      "Created clear participation frameworks that guided members on how and when to engage, reducing friction and increasing the quality of replies and quote posts.",
   },
   {
     id: 5,
-    image: "pow3.jpeg",
-    label: "Raid Coordination",
+    image: "pow5.jpeg",
+    label: "Retention & Reactivation",
     description:
-      "Led coordinated raids and content campaigns that increased active participation.",
+      "Reactivated dormant members through targeted interaction strategies.",
     platform: "X (Twitter)",
     expandedContext:
-      "Organized and executed high-impact raid campaigns with precise timing and coordination, driving measurable engagement spikes and community visibility.",
+      "Identified inactive participants and reintroduced them through direct prompts, themed discussions, and spotlight features, improving overall community stickiness.",
   },
   {
     id: 6,
-    image: "pow3.jpeg",
-    label: "Raid Coordination",
+    image: "pow6.jpeg",
+    label: "Campaign Performance Tracking",
     description:
-      "Led coordinated raids and content campaigns that increased active participation.",
+      "Tracked and optimized campaign performance across multiple pushes.",
     platform: "X (Twitter)",
     expandedContext:
-      "Organized and executed high-impact raid campaigns with precise timing and coordination, driving measurable engagement spikes and community visibility.",
+      "Monitored engagement metrics across raids and posts, iterating on timing, phrasing, and call-to-actions to steadily improve campaign outcomes.",
   },
   {
     id: 7,
-    image: "pow3.jpeg",
-    label: "Raid Coordination",
+    image: "pow7.jpeg",
+    label: "Launch Support Operations",
     description:
-      "Led coordinated raids and content campaigns that increased active participation.",
+      "Supported project launch with coordinated visibility efforts.",
     platform: "X (Twitter)",
     expandedContext:
-      "Organized and executed high-impact raid campaigns with precise timing and coordination, driving measurable engagement spikes and community visibility.",
+      "Handled pre-launch hype, launch-day raids, and post-launch engagement to maintain momentum and ensure consistent visibility during critical phases.",
   },
   {
     id: 8,
-    image: "pow3.jpeg",
-    label: "Raid Coordination",
+    image: "pow8.jpeg",
+    label: "Contributor Onboarding",
     description:
-      "Led coordinated raids and content campaigns that increased active participation.",
+      "Onboarded and aligned new contributors into active participation.",
     platform: "X (Twitter)",
     expandedContext:
-      "Organized and executed high-impact raid campaigns with precise timing and coordination, driving measurable engagement spikes and community visibility.",
+      "Introduced onboarding flows that quickly educated new members on engagement standards, tone, and expectations, shortening the time from join to contribution.",
   },
   {
     id: 9,
-    image: "pow3.jpeg",
-    label: "Raid Coordination",
+    image: "pow9.jpeg",
+    label: "Narrative Alignment",
     description:
-      "Led coordinated raids and content campaigns that increased active participation.",
+      "Aligned community messaging with project narrative and goals.",
     platform: "X (Twitter)",
     expandedContext:
-      "Organized and executed high-impact raid campaigns with precise timing and coordination, driving measurable engagement spikes and community visibility.",
+      "Ensured community-driven content reinforced the project’s core narrative, preventing mixed messaging and strengthening brand consistency across campaigns.",
   },
   {
     id: 10,
     image: "pow10.jpeg",
-    label: "Raid Coordination",
+    label: "Sustained Growth Systems",
     description:
-      "Led coordinated raids and content campaigns that increased active participation.",
+      "Built repeatable systems for long-term community growth.",
     platform: "X (Twitter)",
     expandedContext:
-      "Organized and executed high-impact raid campaigns with precise timing and coordination, driving measurable engagement spikes and community visibility.",
+      "Transitioned short-term tactics into sustainable systems that allowed communities to maintain engagement without constant manual intervention.",
   },
 ];
 
@@ -176,120 +173,146 @@ const contributionItems: ContributionItem[] = [
   },
 ];
 
+/* ---------------- COMPONENT ---------------- */
+
 const ProofOfWorkSection = () => {
-  const [selectedItem, setSelectedItem] = useState<ProofItem | null>(null);
+  const [visibleCount, setVisibleCount] = useState(3);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [showDescription, setShowDescription] = useState(true);
+
+  const activeItem =
+    activeIndex !== null ? proofItems[activeIndex] : null;
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActiveIndex(null);
+      if (e.key === "ArrowRight" && activeIndex !== null) {
+        setActiveIndex((i) =>
+          i! < proofItems.length - 1 ? i! + 1 : i
+        );
+      }
+      if (e.key === "ArrowLeft" && activeIndex !== null) {
+        setActiveIndex((i) => (i! > 0 ? i! - 1 : i));
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [activeIndex]);
 
   return (
     <section id="proof" className="py-24 md:py-32 relative">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
-
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-20">
           <p className="text-muted-foreground text-sm tracking-widest uppercase mb-4">
             Real campaigns. Real traction. Real communities.
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+          <h2 className="text-3xl md:text-4xl font-bold">
             Proof of Work
           </h2>
         </div>
 
-        {/* === VISUAL PROOF GRID === */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-28">
-          {proofItems.map((item) => (
+        {/* GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          {proofItems.slice(0, visibleCount).map((item, index) => (
             <div
               key={item.id}
               onClick={() => {
-                setSelectedItem(item);
+                setActiveIndex(index);
                 setShowDescription(true);
               }}
-              className="group cursor-pointer"
+              className="group cursor-pointer rounded-xl border border-border/30 bg-card/40 shadow-md hover:shadow-lg hover:border-primary/30 transition"
             >
-              <div className="relative overflow-hidden rounded-xl bg-card/40 border border-border/30 shadow-lg shadow-black/5 transition-all hover:border-primary/30">
-                {/* Fixed ratio BEFORE click */}
-                <div className="relative aspect-[3/2] overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.label}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
-                </div>
-
-                <div className="p-5">
-                  <h4 className="text-foreground font-semibold mb-2">
-                    {item.label}
-                  </h4>
-                  <p className="text-sm text-muted-foreground">
-                    {item.description}
-                  </p>
-
-                  <div className="mt-4 flex justify-between text-xs">
-                    <span className="text-muted-foreground/60">
-                      {item.platform}
-                    </span>
-                    <span className="text-primary font-medium">
-                      View details →
-                    </span>
-                  </div>
-                </div>
+              <div className="aspect-[16/9] max-h-44 overflow-hidden rounded-t-xl">
+                <img
+                  src={item.image}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-4">
+                <h4 className="font-semibold text-foreground mb-1">
+                  {item.label}
+                </h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {item.description}
+                </p>
+                <span className="text-xs text-primary font-medium mt-3 inline-block">
+                  View details →
+                </span>
               </div>
             </div>
           ))}
         </div>
 
-        {/* === ARTICLES === */}
-        <div className="mb-28">
-          <h3 className="text-2xl font-bold text-foreground mb-8">
-            Articles & Threads
-          </h3>
+        {/* LOAD MORE */}
+        {visibleCount < proofItems.length && (
+          <div className="text-center mb-28">
+            <button
+              onClick={() => setVisibleCount((c) => c + 3)}
+              className="px-8 py-3 rounded-full border border-border text-sm hover:border-primary hover:text-primary transition"
+            >
+              Load more work
+            </button>
+          </div>
+        )}
 
-          <div className="space-y-6">
+        {/* ARTICLES */}
+        <div className="mb-28">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="h-px flex-1 bg-border/60" />
+            <h3 className="text-xl font-semibold tracking-wide">
+              Articles & Threads
+            </h3>
+            <div className="h-px flex-1 bg-border/60" />
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {contentItems.map((item) => (
               <a
                 key={item.id}
                 href={item.link}
                 target="_blank"
-                rel="noopener noreferrer"
-                className="block rounded-xl border border-border/30 p-6 shadow-md shadow-black/5 hover:border-primary/30 transition"
+                className="group rounded-xl border border-border/30 bg-card/40 p-6 shadow-sm hover:shadow-md hover:border-primary/30 transition"
               >
-                <h4 className="text-lg font-semibold text-foreground mb-2">
+                <span className="text-xs uppercase tracking-wider text-primary/70">
+                  {item.platform}
+                </span>
+                <h4 className="mt-2 font-semibold text-foreground group-hover:text-primary transition-colors">
                   {item.title}
                 </h4>
-                <p className="text-sm text-muted-foreground mb-3">
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                   {item.description}
                 </p>
-                <span className="text-xs font-medium text-primary">
-                  {item.platform} →
-                </span>
               </a>
             ))}
           </div>
         </div>
 
-        {/* === CONTRIBUTIONS === */}
+        {/* CONTRIBUTIONS */}
         <div>
-          <h3 className="text-2xl font-bold text-foreground mb-8">
-            Contributions
-          </h3>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="h-px flex-1 bg-border/60" />
+            <h3 className="text-xl font-semibold tracking-wide">
+              Contributions
+            </h3>
+            <div className="h-px flex-1 bg-border/60" />
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
             {contributionItems.map((item) => (
               <div
                 key={item.id}
-                className="flex gap-5 items-start rounded-xl border border-border/30 p-6 shadow-md shadow-black/5"
+                className="flex gap-4 items-start rounded-xl border border-border/30 bg-card/40 p-6 shadow-sm hover:shadow-md transition"
               >
                 <img
                   src={item.logo}
-                  alt={item.name}
-                  className="w-12 h-12 rounded-md object-contain bg-background"
+                  className="w-12 h-12 object-contain rounded-md bg-background"
                 />
                 <div>
-                  <h4 className="text-lg font-semibold text-foreground mb-1">
+                  <h4 className="font-semibold text-foreground mb-1">
                     {item.name}
                   </h4>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     {item.description}
                   </p>
                 </div>
@@ -299,32 +322,42 @@ const ProofOfWorkSection = () => {
         </div>
       </div>
 
-      {/* === FULL VIEW MODAL === */}
-      <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
-        <DialogContent className="max-w-none w-screen h-screen bg-background border-none p-0">
-          {selectedItem && (
+      {/* FULL VIEW */}
+      <Dialog open={!!activeItem} onOpenChange={() => setActiveIndex(null)}>
+        <DialogContent className="w-screen h-screen p-0 bg-background border-none">
+          {activeItem && (
             <div
               className="relative w-full h-full flex items-center justify-center"
-              onClick={() => setShowDescription((prev) => !prev)}
+              onClick={() => setShowDescription((s) => !s)}
             >
-              {/* Full image — no ratio, no size restriction */}
+              <button
+                onClick={() => setActiveIndex(null)}
+                className="absolute top-4 right-4 z-50 px-3 py-1 rounded-md bg-background/80 border text-sm"
+              >
+                Close
+              </button>
+
               <img
-                src={selectedItem.image}
-                alt={selectedItem.label}
+                src={activeItem.image}
                 className="max-w-full max-h-full object-contain"
               />
 
-              {/* Optional description overlay */}
-              {showDescription && (
-                <div className="absolute bottom-0 w-full backdrop-blur-md bg-background/60 p-6">
-                  <h4 className="text-sm uppercase tracking-wider text-primary mb-2">
-                    {selectedItem.label}
-                  </h4>
-                  <p className="text-muted-foreground text-sm">
-                    {selectedItem.expandedContext}
-                  </p>
-                </div>
-              )}
+              <div className="absolute top-4 left-4 text-xs text-muted-foreground">
+                Tap image • Swipe • Esc
+              </div>
+
+              <div
+                className={`absolute bottom-0 w-full backdrop-blur-md bg-background/60 p-6 transition-opacity duration-300 ${
+                  showDescription ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <h4 className="text-sm uppercase tracking-wider text-primary mb-2">
+                  {activeItem.label}
+                </h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {activeItem.expandedContext}
+                </p>
+              </div>
             </div>
           )}
         </DialogContent>
