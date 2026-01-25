@@ -31,7 +31,7 @@ const proofItems: ProofItem[] = [
   {
     id: 1,
     image: "pow1.jpeg",
-    label: "Community Growth Sprint",
+    label: "Community grow",
     description:
       "Scaled an early-stage Web3 community from inactive to daily engagement within one week.",
     platform: "X (Twitter)",
@@ -41,32 +41,32 @@ const proofItems: ProofItem[] = [
   {
     id: 2,
     image: "pow2.jpeg",
-    label: "Raid Campaign Execution",
+    label: "POW",
     description:
-      "Coordinated high-impact raid campaigns around key announcements.",
+      "Desc.",
     platform: "X (Twitter)",
     expandedContext:
-      "Led synchronized raid sessions tied to product updates and partnerships, aligning contributors with pre-crafted messaging to maximize visibility and algorithmic reach.",
+      "Desc.",
   },
   {
     id: 3,
     image: "pow3.jpeg",
-    label: "Content Amplification",
+    label: "POW",
     description:
-      "Amplified long-form content through structured engagement loops.",
+      "Desc.",
     platform: "X (Twitter)",
     expandedContext:
-      "Built amplification systems where core contributors boosted threads strategically, extending content lifespan and driving sustained impressions beyond the first 24 hours.",
+      "Desc.",
   },
   {
     id: 4,
     image: "pow4.jpeg",
-    label: "Engagement Framework Design",
+    label: "POW",
     description:
-      "Designed reusable engagement frameworks for community members.",
+      "Desc.",
     platform: "X (Twitter)",
     expandedContext:
-      "Created clear participation frameworks that guided members on how and when to engage, reducing friction and increasing the quality of replies and quote posts.",
+      "Desc.",
   },
   {
     id: 5,
