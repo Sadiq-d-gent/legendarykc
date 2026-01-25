@@ -10,6 +10,8 @@ import MagnetXSection from "@/components/MagnetXSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import SocialProofSection from "@/components/SocialProofSection";
 import Footer from "@/components/Footer";
+import ProofOfWork from "@/components/ProofOfWork";
+import Contact from "@/components/Contact";
 
 const Index = () => {
   useEffect(() => {
@@ -27,10 +29,10 @@ const Index = () => {
       <HeroSection />
       <AboutSection />
       <ServicesSection />
-      <ProofOfWorkSection />
+      <ProofOfWork />
       <MagnetXSection />
       <ProjectsSection />
-      <SocialProofSection />
+      <Contact />
       <Footer />
     </main>
   );
